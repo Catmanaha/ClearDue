@@ -519,7 +519,7 @@ test('Studio widgets keep uninvestigated cases visible and persist bounded explo
       await expect(
         page
           .locator('.studio-surface .comparison-row')
-          .getByRole('link', { name: row.customer, exact: true })
+          .getByRole('link', { name: row.title, exact: true })
           .and(page.locator(`a[href="/cases/${row.id}"]`)),
       ).toBeVisible();
     expect(latest.rows).toEqual(baseline.rows);
