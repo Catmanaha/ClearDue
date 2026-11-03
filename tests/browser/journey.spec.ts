@@ -549,6 +549,15 @@ test('accepted investigation with failed view refresh recovers through GET witho
   expect(response.status()).toBe(201);
   const { id } = await response.json();
   await page.goto(`/cases/${id}`);
+  // Wait for the workbench to handle a local interaction before the one-shot POST.
+  const secondSource = page
+    .getByRole('group', { name: 'Evidence documents' })
+    .getByRole('button')
+    .nth(1);
+  await expect(async () => {
+    await secondSource.click({ timeout: 1000 });
+    await expect(secondSource).toHaveAttribute('aria-pressed', 'true', { timeout: 500 });
+  }).toPass({ timeout: 15000 });
   let posts = 0;
   await page.route(`**/api/cases/${id}`, async (route) => {
     if (route.request().method() === 'GET')
