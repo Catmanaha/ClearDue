@@ -1,0 +1,19 @@
+node_modules/
+.next/
+.env
+.env.*
+!.env.example
+coverage/
+test-results/
+playwright-report/
+*.log
+.local/
+.ast/
+dev/astropods-gateway/.ast/
+dev/astropods-gateway/.env
+.serena/
+*.tsbuildinfo
+.impeccable/config.local.json
+# Private account-setup captures are not entry/public-source assets.
+docs/screenshots/paypal-app-*.png
+docs/screenshots/paypal-invoicing-*.png

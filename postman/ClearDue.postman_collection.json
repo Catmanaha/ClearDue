@@ -1,0 +1,127 @@
+{
+  "info": {
+    "name": "ClearDue guarded PayPal sandbox capability",
+    "description": "Synthetic project resources only. Configure private sandbox environment; writes are disabled. Never export configured credentials. Prefer pnpm test:paypal for domain/approval-pipeline verification. This collection is manual capability assistance, not proof that any operation ran.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const url = pm.request.url.toString();",
+          "if (!url.startsWith('https://api-m.sandbox.paypal.com/')) throw new Error('Sandbox host only');",
+          "if (pm.request.method !== 'GET' && !url.includes('/oauth2/token')) {",
+          "  if (pm.environment.get('sandbox_test_enabled') !== 'true' || pm.environment.get('sandbox_write_enabled') !== 'true') throw new Error('Explicit sandbox test/write flags required');",
+          "  if (url.includes('/invoices/')) { const id = pm.environment.get('invoice_id'); const own = (pm.environment.get('project_invoice_ids') || '').split(',').map(s => s.trim()); if (!id || !own.includes(id)) throw new Error('Allowlist this project-created invoice ID first'); }",
+          "}",
+          "if (pm.request.method === 'PUT' || url.endsWith('/send')) { const seen = JSON.parse(pm.environment.get('observed_invoice_json') || 'null'); if (!seen || seen.id !== pm.environment.get('invoice_id') || seen.detail.memo !== 'ClearDue project-created synthetic sandbox capability test' || Date.now() - Number(pm.environment.get('observed_at')) > 30000) throw new Error('Read this tagged project invoice immediately before writing'); }",
+          "if (pm.request.method === 'PUT') { if (pm.environment.get('approved_correction') !== 'true' || !pm.environment.get('approved_invoice_put_json')) throw new Error('Review a complete approved writable payload first'); JSON.parse(pm.environment.get('approved_invoice_put_json')); }"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authenticate sandbox project",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            { "key": "username", "value": "{{client_id}}", "type": "string" },
+            { "key": "password", "value": "{{client_secret}}", "type": "string" }
+          ]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/x-www-form-urlencoded" }],
+        "url": "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [{ "key": "grant_type", "value": "client_credentials" }]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Authenticated', () => pm.response.to.have.status(200)); if (pm.response.code === 200) pm.environment.set('access_token', pm.response.json().access_token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Create tagged synthetic GBP1250 draft (guarded)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "https://api-m.sandbox.paypal.com/v2/invoicing/invoices",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"detail\":{\"currency_code\":\"GBP\",\"memo\":\"ClearDue project-created synthetic sandbox capability test\",\"payment_term\":{\"term_type\":\"DUE_ON_RECEIPT\"}},\"invoicer\":{\"email_address\":\"{{seller_email}}\"},\"primary_recipients\":[{\"billing_info\":{\"email_address\":\"{{buyer_email}}\"}}],\"items\":[{\"name\":\"Landing page\",\"quantity\":\"1\",\"unit_amount\":{\"currency_code\":\"GBP\",\"value\":\"1000.00\"}},{\"name\":\"Social-media pack\",\"quantity\":\"1\",\"unit_amount\":{\"currency_code\":\"GBP\",\"value\":\"250.00\"}}],\"configuration\":{\"allow_tip\":false,\"partial_payment\":{\"allow_partial_payment\":false}}}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Created', () => pm.expect([200,201]).to.include(pm.response.code)); // Inspect privately and explicitly allowlist the returned invoice ID. Do not auto-repeat after timeout."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Read authoritative invoice and hosted recipient link",
+      "request": {
+        "method": "GET",
+        "url": "https://api-m.sandbox.paypal.com/v2/invoicing/invoices/{{invoice_id}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Read invoice', () => pm.response.to.have.status(200)); pm.test('GBP invoice', () => pm.expect(pm.response.json().detail.currency_code).to.eql('GBP')); if (pm.response.code === 200) { pm.environment.set('observed_invoice_json', JSON.stringify(pm.response.json())); pm.environment.set('observed_at', String(Date.now())); } // Inspect paid/due/transactions; PAID event/name alone is insufficient."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Send tagged synthetic draft (guarded, no update email)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "https://api-m.sandbox.paypal.com/v2/invoicing/invoices/{{invoice_id}}/send",
+        "body": { "mode": "raw", "raw": "{\"send_to_invoicer\":false,\"send_to_recipient\":false}" }
+      }
+    },
+    {
+      "name": "5. Full owner-approved writable PUT (guarded)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "https://api-m.sandbox.paypal.com/v2/invoicing/invoices/{{invoice_id}}?send_to_recipient=false&send_to_invoicer=false",
+        "body": { "mode": "raw", "raw": "{{approved_invoice_put_json}}" }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Update acknowledged', () => pm.expect([200,204]).to.include(pm.response.code)); // Always read back and verify all preserved fields. Unknown outcome means reconcile, never blind retry."
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

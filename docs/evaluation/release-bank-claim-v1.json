@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Approved scope",
+    "kind": "agreement",
+    "text": "The customer approved the GBP 1,000 landing page and GBP 250 social-media pack. Total agreed: GBP 1,250."
+  },
+  {
+    "label": "Finance message",
+    "kind": "message",
+    "text": "Our finance team says this invoice was paid yesterday by bank transfer. Please close it as paid; we do not have a PayPal receipt."
+  }
+]

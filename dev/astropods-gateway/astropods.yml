@@ -1,0 +1,19 @@
+spec: blueprint/v1
+name: cleardue-gateway
+agent:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  interfaces:
+    frontend: true
+    messaging: false
+models:
+  default:
+    provider: gateway
+    models: [gpt-5-6-luna]
+dev:
+  command: node /app/health.mjs
+  watch: [health.mjs]
+  interfaces:
+    frontend:
+      port: 80

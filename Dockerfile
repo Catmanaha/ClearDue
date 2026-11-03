@@ -1,0 +1,29 @@
+FROM node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 AS build
+WORKDIR /app
+RUN npm install --global pnpm@11.25.0
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
+COPY tsconfig.json next-env.d.ts next.config.ts postcss.config.mjs ./
+COPY src ./src
+COPY scripts ./scripts
+COPY migrations ./migrations
+COPY deploy/container/environment.mjs deploy/container/run.mjs ./deploy/container/
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm build
+
+FROM node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 AS runtime
+WORKDIR /app
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 LOCAL_DEMO_ACCESS=false \
+    PAYMENT_MODE=demo AI_MODE=fixture AI_PROVIDER=astropods LIVE_AI_ENABLED=false \
+    AG_STUDIO_ENABLED=false ASTROPODS_CREDIT_ONLY_CONFIRMED=false \
+    LIVE_AI_DAILY_CALL_LIMIT=32 LIVE_AI_DAILY_TOKEN_LIMIT=240000 LIVE_AI_MAX_OUTPUT_TOKENS=2000
+COPY --from=build --chown=node:node /app /app
+COPY --chown=node:node LICENSE THIRD_PARTY_NOTICES.md ./
+USER node
+EXPOSE 80
+CMD ["node", "deploy/container/run.mjs"]
+
+FROM runtime AS bootstrap
+CMD ["node", "deploy/container/run.mjs", "bootstrap"]
+
+FROM runtime AS web

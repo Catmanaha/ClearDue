@@ -1,0 +1,249 @@
+{
+  "provenance": "fixture-rules",
+  "model": null,
+  "promptVersion": "cleardue-investigator-v5",
+  "datasetVersion": "synthetic-v1",
+  "warning": "24 templated cases from six scenario families; held-out variants are header variations, not independent production validation. Hand-labelled quote-support rubric is specific to these synthetic families; not a general semantic judge.",
+  "results": [
+    {
+      "id": "case-1",
+      "label": "unsupported-extra",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-2",
+      "label": "approved-extra",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-3",
+      "label": "missing-reference",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-4",
+      "label": "claimed-payment",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-5",
+      "label": "conflict",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-6",
+      "label": "injection",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-7",
+      "label": "unsupported-extra",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-8",
+      "label": "approved-extra",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-9",
+      "label": "missing-reference",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-10",
+      "label": "claimed-payment",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-11",
+      "label": "conflict",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-12",
+      "label": "injection",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-13",
+      "label": "unsupported-extra",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-14",
+      "label": "approved-extra",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-15",
+      "label": "missing-reference",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-16",
+      "label": "claimed-payment",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-17",
+      "label": "conflict",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-18",
+      "label": "injection",
+      "split": "development",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-19",
+      "label": "unsupported-extra",
+      "split": "held-out",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-20",
+      "label": "approved-extra",
+      "split": "held-out",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-21",
+      "label": "missing-reference",
+      "split": "held-out",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-22",
+      "label": "claimed-payment",
+      "split": "held-out",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-23",
+      "label": "conflict",
+      "split": "held-out",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    },
+    {
+      "id": "case-24",
+      "label": "injection",
+      "split": "held-out",
+      "issueCorrect": true,
+      "financialActionCorrect": true,
+      "referencesValid": true,
+      "rubricSupportCheck": true,
+      "abstentionCorrect": true
+    }
+  ]
+}

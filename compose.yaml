@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: cleardue
+      POSTGRES_PASSWORD: cleardue_local
+      POSTGRES_DB: cleardue
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["cleardue-db:/var/lib/postgresql/data", "./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/test.sql:ro"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cleardue -d cleardue"]
+      interval: 5s
+      retries: 10
+volumes:
+  cleardue-db:

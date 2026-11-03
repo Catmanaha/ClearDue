@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "selected": "2026-11-01",
+  "edited": false,
+  "images": [
+    {
+      "file": "intake-current-desktop.png",
+      "captured": "2026-11-01",
+      "runtime": "production",
+      "releaseImage": "cleardue-runtime:release-20261101-v1",
+      "extension": "png",
+      "mediaType": "image/png",
+      "width": 1600,
+      "height": 3134,
+      "sha256": "e9dfd0c2465757a4ad7998b8d1feb0135a4933525e4b5f9ff95f6de4929b5486",
+      "payment": "simulated",
+      "analysis": "fixture rules, no model calls",
+      "studio": "Installed local Pro+AI trial; full judging/domain coverage unverified",
+      "context": "Separate complete records; preview has not created a case"
+    },
+    {
+      "file": "source-review-current-desktop.png",
+      "captured": "2026-11-01",
+      "runtime": "production",
+      "releaseImage": "cleardue-runtime:release-20261101-v1",
+      "extension": "png",
+      "mediaType": "image/png",
+      "width": 1600,
+      "height": 1762,
+      "sha256": "3084b3fee4c3f32c2a82e44dec14401a3a5de71dafc8f48b8ae230bed78c967b",
+      "payment": "simulated",
+      "analysis": "fixture rules, no model calls",
+      "studio": "Installed local Pro+AI trial; full judging/domain coverage unverified",
+      "context": "Exact supplied reply; correction still awaits explicit owner review"
+    },
+    {
+      "file": "studio-linked-current-desktop.png",
+      "captured": "2026-11-01",
+      "runtime": "production",
+      "releaseImage": "cleardue-runtime:release-20261101-v1",
+      "extension": "png",
+      "mediaType": "image/png",
+      "width": 1600,
+      "height": 1979,
+      "sha256": "3d9cf93150c4d7ed95e823565cece9b6dfb7511e5c12cdc809454a4a26c5f8b1",
+      "payment": "simulated",
+      "analysis": "fixture rules, no model calls",
+      "studio": "Installed local Pro+AI trial; full judging/domain coverage unverified",
+      "context": "Selected case: 0 paid, 25000p removed, 100000p outstanding; manual controls; no live chat"
+    },
+    {
+      "file": "customer-feedback-current-mobile.png",
+      "captured": "2026-11-01",
+      "runtime": "production",
+      "releaseImage": "cleardue-runtime:release-20261101-v1",
+      "extension": "png",
+      "mediaType": "image/png",
+      "width": 390,
+      "height": 1460,
+      "sha256": "76bbd56e1cdc52f352768193c6478ee5223d19e990765cb6a23b3785ed11f687",
+      "payment": "simulated",
+      "analysis": "fixture rules, no model calls",
+      "studio": "Installed local Pro+AI trial; full judging/domain coverage unverified",
+      "context": "Anonymous mobile customer grant; saved dissent; no payment simulator"
+    }
+  ],
+  "scope": "Unedited actual browser captures from current release in a separately initialized synthetic workspace. No new model or PayPal call, real payment or human-usability claim. Prior selections remain preserved in manifest-20261031.json."
+}

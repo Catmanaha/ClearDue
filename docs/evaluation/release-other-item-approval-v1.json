@@ -1,0 +1,12 @@
+[
+  {
+    "label": "Agreement",
+    "kind": "agreement",
+    "text": "Landing page design and build: GBP 1,000. Additional work requires prior customer approval."
+  },
+  {
+    "label": "Customer reply",
+    "kind": "message",
+    "text": "I approve GBP 250 for the photography session. The separate social-media pack is still on hold; I have not approved it."
+  }
+]

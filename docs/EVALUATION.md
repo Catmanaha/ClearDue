@@ -1,0 +1,35 @@
+# Evaluation report
+
+Dataset `src/domain/fixtures.ts`, version synthetic-v1: six scenario families with four header/prefix variants each,24 labeled cases. First18 development examples; last6 held-out header variants. These variants are deliberately modest and are not24 independent user cases or production validation.
+
+Fixture-rule execution: `pnpm eval:fixtures`; machine-readable results in `docs/evaluation/fixture-results.json`. Observed first run24/24 expected issue/action/reference/abstention label checks. Model calls0. No accuracy percentage or revenue claim is inferred. Prompt version cleardue-investigator-v1 is recorded; fixture path does not use a model.
+
+Covered families: unapproved extra, explicit approval, missing reference, claimed payment, contradictory instructions and document injection. Pure tests also reject cross-case/stale/invented quotes, unknown lines, unsupported financial complexity, pending/partial/external recorded payment and forged execution tools.
+
+Schema/source validation proves an exact quote exists in the scoped immutable document, not that it semantically supports a recommendation. A separate hand-labelled support rubric checks required meaningful excerpts for these six synthetic families. A negative regression supplies a real but irrelevant conversation header: exact span validation accepts it and the support rubric rejects it. This narrow rubric is not a general semantic model judge; human scoring remains required before any live reasoning-quality claim. No hidden reasoning is requested/persisted.
+
+Live evaluation now ran through the Astropods AI Gateway. Requested model gpt-5-6-luna; provider reported openai.gpt-5.6-luna. Final prompt/schema cleardue-investigator-v5: all six known synthetic cases matched expected issues/actions, exact versioned source references and the narrow support rubric. This run used7441 input and1365 output tokens, with observed per-case latency1793–4453ms. No financial operation was executed by evaluation.
+
+Earlier runs exposed invalid source references, overbroad missing-approval concessions, proposal/review contradictions and inconsistent decision-field selection. Preserve these private reports; they were not substituted with fixtures. Source references now select an enumerated request-local source index, whose document/version/quote/UTF-16 offset are computed by code. Financial and no-change decisions use strict mutually exclusive branches; every branch starts with the same type discriminator. The final focused no-change diagnostic and complete rerun passed after aligning that schema order. This is observed compatibility, not a claim about every Gateway/model/schema combination. Existing finding/payment/action validation remains unchanged.
+
+Because these cases informed fixes, the final6/6 is regression evidence, not an unseen accuracy estimate. The coding assistant inspected the findings against the provided records and rubric; independent human semantic signoff has not been obtained. Add genuinely new untouched cases before any held-out/general-quality claim. Private .local/live-evaluation.json and live-evaluation-review.json hold actual findings/usage/latency and review qualifications; v1/v2/v3/v4 reports remain separate. No hidden reasoning is stored.
+
+`pnpm eval:live` requires explicit provider credentials/model, enabled flag and persistent user-selected budgets. It exits nonzero for incomplete/rejected findings, records individual validation rejections and stops on provider/config/budget failures. No automatic retries or paid/fixture fallback. At the 30 October regression checkpoint, the test ledger held29 calls and218569 conservatively reserved tokens across all probes, failed attempts, Studio and evaluations; final ceilings32/240000/2000. This ledger is a conservative reservation, not actual billable token usage or a cash cost.
+
+
+## Fresh semantic and Studio continuation — 31 October 2026
+
+Two additional synthetic examples were declared before inference. The real Gateway responses matched the expected issue/action and exact-source checks, followed by coding-assistant support review. These are targeted semantic counterexamples, not independent human labels or an unseen accuracy estimate. They did not execute a proposal or change an invoice.
+
+| Data-only import bundle | Predeclared result | Observed result |
+|---|---|---|
+| [Approval for a different service](evaluation/release-other-item-approval-v1.json) | QUESTIONED_CHARGE / REMOVE_ITEM(social-pack): photography approval does not approve the held social-media pack | Matched, citing the approval clause and withheld scope |
+| [Reported bank transfer](evaluation/release-bank-claim-v1.json) | CLAIMED_PAYMENT / NONE: a report does not replace the UNPAID observation | Matched, requesting reconciliation |
+
+For a controlled reproduction, import either JSON array through New Case's record-file input with the explicit demo invoice and an authorized live-AI profile. Creating the case does not call a model. Inspect the records, then deliberately investigate within approved credit/call limits. Leave financial approval untouched. Default fixture rules are a separate narrow demonstrator and were not relabelled as these live results. New calls require applicable authorization and valid credentials.
+
+The first two real Studio conversations executed the new filters/tool-result replies and saved presentation, but their empty demo-scoped data exposed ambiguous mode wording. The fixed request now supplies the configured adapter explicitly. Three offline port regressions pass after two failed before the fix. Actual follow-up tool/reply conversations identify empty demo as simulated and summarize one saved sandbox confirmed outcome as100000p paid,25000p reduced and0p due. No new payment, correction, PayPal API read or model financial tool occurred; these were persisted observations. The original view was restored.
+
+The user-approved continuation consumed10 calls and65124 conservatively reserved tokens, within the final10/100000/2000 bounds. The project-local temporary profiles shared the existing PostgreSQL budget ledger and were stopped; no further calls are authorized by this completed batch. Investigator prompt remains cleardue-investigator-v5; requested gpt-5-6-luna and reported openai.gpt-5.6-luna. Studio's eight calls are distinct from the two investigator calls. Reservations are not billed token counts; Billing still displayed$9.98 credit,$0 payable and no card afterward. The30 October final usage32/237632 belongs to the previous day.
+
+All eight financial-table hashes matched before/after, including the original paid sandbox proof. Current clean-copy checks pass91 unit/24 fixture cases, lint/types/build. Exact request grounding and these observed replies do not prove all model answers, customer outcomes, independent usability, licence entitlement or credential access through judging. Private responses, initial failures and qualifications remain in .local/release-proof-20261031; no hidden reasoning was requested or stored.

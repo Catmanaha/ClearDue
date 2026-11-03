@@ -1,0 +1,47 @@
+spec: blueprint/v1
+name: cleardue
+agent:
+  build:
+    context: .
+    dockerfile: Dockerfile
+    target: web
+  interfaces:
+    frontend: true
+    messaging: false
+  healthcheck:
+    path: /api/health
+  inputs:
+    - { name: APP_URL, datatype: string }
+    - { name: BETTER_AUTH_SECRET, datatype: string, secret: true }
+    - { name: OWNER_EMAILS, datatype: string, default: judge@cleardue.example }
+    - { name: READ_ONLY_JUDGE_EMAIL, datatype: string, optional: true }
+    - { name: AI_MODE, datatype: string, default: fixture }
+    - { name: LIVE_AI_ENABLED, datatype: string, default: 'false' }
+    - { name: ASTROPODS_CREDIT_ONLY_CONFIRMED, datatype: string, default: 'false' }
+    - { name: LIVE_AI_DAILY_CALL_LIMIT, datatype: string, default: '6' }
+    - { name: LIVE_AI_DAILY_TOKEN_LIMIT, datatype: string, default: '28000' }
+    - { name: LIVE_AI_MAX_OUTPUT_TOKENS, datatype: string, default: '2000' }
+    - { name: AG_STUDIO_ENABLED, datatype: string, default: 'false' }
+    - { name: AG_STUDIO_LICENSE_KEY, datatype: string, secret: true, optional: true }
+models:
+  default:
+    provider: gateway
+    models: [gpt-5-6-luna]
+knowledge:
+  judgedb:
+    provider: postgres
+ingestion:
+  initialize:
+    container:
+      build:
+        context: .
+        dockerfile: deploy/container/Dockerfile.bootstrap
+    trigger:
+      type: manual
+    inputs:
+      - { name: DATABASE_URL, datatype: string, secret: true, optional: true }
+      - { name: APP_URL, datatype: string, optional: true }
+      - { name: BETTER_AUTH_SECRET, datatype: string, secret: true, optional: true }
+      - { name: OWNER_EMAILS, datatype: string, optional: true }
+      - { name: CLEARDUE_OWNER_EMAIL, datatype: string, optional: true }
+      - { name: CLEARDUE_OWNER_PASSWORD, datatype: string, secret: true, optional: true }

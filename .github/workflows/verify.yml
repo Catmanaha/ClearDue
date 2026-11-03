@@ -1,0 +1,43 @@
+name: Local verification
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  local:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env: { POSTGRES_USER: cleardue, POSTGRES_PASSWORD: cleardue_local, POSTGRES_DB: cleardue_test }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U cleardue -d cleardue_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://cleardue:cleardue_local@127.0.0.1:5432/cleardue_test
+      TEST_DATABASE_URL: postgresql://cleardue:cleardue_local@127.0.0.1:5432/cleardue_test
+      ALLOW_TEST_DATABASE_RESET: "true"
+      PAYMENT_MODE: demo
+      AI_MODE: fixture
+      LOCAL_DEMO_ACCESS: "true"
+      APP_URL: http://127.0.0.1:3000
+      LIVE_AI_ENABLED: "false"
+      PAYPAL_SANDBOX_TEST_ENABLED: "false"
+      PAYPAL_SANDBOX_WRITE_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 11.25.0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22.18.0, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+      - run: node --test deploy/container/environment.test.mjs
+      - run: pnpm test:integration
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - run: pnpm test:e2e:production
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: browser-evidence, path: test-results, retention-days: 7 }
+# External PayPal/live-model calls are deliberately absent, including on untrusted pull requests.
