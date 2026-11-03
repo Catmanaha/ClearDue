@@ -679,10 +679,18 @@ test('Studio case grid links keyboard selection to evidence, paired correction a
 }, testInfo) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto('/analytics');
-  await page
-    .getByRole('combobox', { name: 'Show', exact: true })
-    .selectOption('confirmed-outcomes');
+  const initialView = (await (await request.get('/api/dashboard')).json()).view;
+  const savedNotice = page.getByText('Presentation saved. Invoice state is unchanged.', {
+    exact: true,
+  });
+  if (initialView.filter !== 'confirmed-outcomes') {
+    await page
+      .getByRole('combobox', { name: 'Show', exact: true })
+      .selectOption('confirmed-outcomes');
+    await expect(savedNotice).toBeVisible();
+  }
   const baseline = await (await request.get('/api/dashboard')).json();
+  expect(baseline.view.filter).toBe('confirmed-outcomes');
   const grid = page.getByRole('region', { name: 'Read-only case explorer' });
   await expect(
     grid.getByRole('heading', { name: 'Follow a case from evidence to outcome.' }),
@@ -723,7 +731,14 @@ test('Studio case grid links keyboard selection to evidence, paired correction a
   await expect(page.locator('.outcome-ledger > div').nth(1)).toContainText(
     money(expected.removedPence),
   );
-  await page.getByRole('combobox', { name: 'Layout', exact: true }).selectOption('outcomes-first');
+  const layout = baseline.view.layout === 'outcomes-first' ? 'evidence-first' : 'outcomes-first';
+  const savedLayout = page.waitForResponse(
+    (response) =>
+      response.url().endsWith('/api/dashboard') && response.request().method() === 'POST',
+  );
+  await page.getByRole('combobox', { name: 'Layout', exact: true }).selectOption(layout);
+  expect((await savedLayout).status()).toBe(200);
+  await expect(page.getByRole('combobox', { name: 'Layout', exact: true })).toHaveValue(layout);
   await expect(trail).toContainText(expected.customer);
   expect((await (await request.get('/api/dashboard')).json()).rows).toEqual(baseline.rows);
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -737,11 +752,9 @@ test('Studio case grid links keyboard selection to evidence, paired correction a
     await expect(page.locator('#source-text mark')).toHaveText(expected.citations[0].quote);
     await expect(page.locator('#source-text')).toBeFocused();
   }
-  await page.goto('/analytics');
-  const reset = page.waitForResponse(
-    (response) =>
-      response.url().endsWith('/api/dashboard') && response.request().method() === 'POST',
-  );
-  await page.getByRole('combobox', { name: 'Show', exact: true }).selectOption('all');
-  expect((await reset).status()).toBe(200);
+  const restored = await request.post('/api/dashboard', {
+    headers: { origin: 'http://127.0.0.1:3100' },
+    data: initialView,
+  });
+  expect(restored.status()).toBe(200);
 });
