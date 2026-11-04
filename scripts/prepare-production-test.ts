@@ -6,6 +6,7 @@ import { config } from '../src/server/config';
 import { createIntakeCase } from '../src/server/intake';
 import { runInvestigation } from '../src/server/workflow';
 import { fixtures } from '../src/domain/fixtures';
+import { prepareJudgeExamples } from '../src/server/judge-examples';
 
 try {
   const database = new URL(process.env.DATABASE_URL ?? '');
@@ -31,13 +32,19 @@ try {
     documents: fixture.docs.map(({ label, kind, text }) => ({ label, kind, text })),
   });
   await runInvestigation(judge.user.id, saved.id);
+  const examples = await prepareJudgeExamples(judge.user.id);
   await mkdir('.local/production-test', { recursive: true });
   await writeFile('.local/production-test/credentials.json', JSON.stringify({ email, password }), {
     mode: 0o600,
   });
   await writeFile(
     '.local/production-test/judge-credentials.json',
-    JSON.stringify({ email: readOnlyJudgeEmail, password: judgePassword, caseId: saved.id }),
+    JSON.stringify({
+      email: readOnlyJudgeEmail,
+      password: judgePassword,
+      caseId: saved.id,
+      exampleIds: examples.map((example) => example.id),
+    }),
     { mode: 0o600 },
   );
   console.log('Isolated synthetic production-test owner and judge prepared.');

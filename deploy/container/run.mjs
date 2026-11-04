@@ -38,9 +38,21 @@ async function once(args, env) {
 try {
   const env = runtimeEnvironment(process.env);
   const bootstrap = process.argv[2] === 'bootstrap';
-  if (!bootstrap) delete env.CLEARDUE_OWNER_PASSWORD;
+  const examples = bootstrap && env.CLEARDUE_SETUP_TASK === 'judge-examples';
+  if (!bootstrap || examples) delete env.CLEARDUE_OWNER_PASSWORD;
   await once(['--import', 'tsx', 'scripts/migrate.ts'], env);
-  if (!stopping && bootstrap) {
+  if (!stopping && examples) {
+    await once(
+      ['--import', 'tsx', 'scripts/prepare-judge-examples.ts', '--confirm-synthetic-examples'],
+      {
+        ...env,
+        AI_MODE: 'fixture',
+        LIVE_AI_ENABLED: 'false',
+        PAYPAL_SANDBOX_WRITE_ENABLED: 'false',
+        PAYPAL_SANDBOX_TEST_ENABLED: 'false',
+      },
+    );
+  } else if (!stopping && bootstrap) {
     await once(
       ['--import', 'tsx', 'scripts/bootstrap-judge.ts', '--confirm-empty-synthetic-db'],
       env,

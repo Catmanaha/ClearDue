@@ -93,7 +93,7 @@ test('protected judge can review its saved case and cannot alter the workspace o
   browser,
   request: owner,
 }) => {
-  const { email, password, caseId } = JSON.parse(
+  const { email, password, caseId, exampleIds } = JSON.parse(
     await readFile('.local/production-test/judge-credentials.json', 'utf8'),
   );
   const judge = await browser.newContext({
@@ -111,7 +111,9 @@ test('protected judge can review its saved case and cannot alter the workspace o
     ).toBe(200);
     const cases = await judge.request.get('/api/cases');
     expect(cases.status()).toBe(200);
-    expect((await cases.json()).map((row: { id: string }) => row.id)).toEqual([caseId]);
+    expect((await cases.json()).map((row: { id: string }) => row.id).sort()).toEqual(
+      [caseId, ...exampleIds].sort(),
+    );
     const saved = await judge.request.get(`/api/cases/${caseId}`);
     expect(saved.status()).toBe(200);
     const savedData = await saved.json();
@@ -175,6 +177,46 @@ test('protected judge can review its saved case and cannot alter the workspace o
     );
 
     const page = await judge.newPage();
+    await page.goto('/');
+    const walkthrough = page.getByRole('region', { name: 'Start with these two examples.' });
+    await expect(walkthrough).toContainText('Example analysis · no AI');
+    await walkthrough.getByRole('link', { name: 'Review the questioned extra' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Example: a questioned £250 extra', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'The extra needs a conversation.', exact: true }),
+    ).toBeVisible();
+    await page.locator('.citation').last().press('Enter');
+    await expect(page.locator('#source-text mark')).toHaveText(
+      'Let me check with my business partner before we add that.',
+    );
+    await expect(
+      page.getByRole('button', { name: 'Approve this correction', exact: true }),
+    ).toHaveCount(0);
+    await page.getByRole('link', { name: 'All cases', exact: true }).click();
+    await walkthrough.getByRole('link', { name: 'Compare the approved extra' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'The customer approved this extra.', exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Approve this correction', exact: true }),
+    ).toHaveCount(0);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/');
+    await expect(walkthrough).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+      true,
+    );
+    await page.screenshot({
+      path: '.local/production-test/results/judge-walkthrough-mobile.png',
+      fullPage: true,
+    });
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.screenshot({
+      path: '.local/production-test/results/judge-walkthrough-desktop.png',
+      fullPage: true,
+    });
     await page.goto(`/cases/${caseId}`);
     await expect(
       page.getByRole('heading', { name: 'Saved judge case', exact: true }),

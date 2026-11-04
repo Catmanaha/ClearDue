@@ -7,6 +7,7 @@ import { Status } from './ui';
 import { money } from '@/lib/format';
 import type { listCases } from '@/server/workflow';
 import { useIntakeDraftStore } from './intake-draft';
+import type { JudgeExampleLink } from '@/server/judge-examples';
 type Row = Awaited<ReturnType<typeof listCases>>[number] & { pendingReplies: number };
 export function CaseQueue({
   initial,
@@ -14,12 +15,14 @@ export function CaseQueue({
   now,
   draftScope,
   readOnly = false,
+  judgeExamples = [],
 }: {
   initial: Row[];
   mode: string;
   now: number;
   draftScope: string;
   readOnly?: boolean;
+  judgeExamples?: JudgeExampleLink[];
 }) {
   const draftStore = useIntakeDraftStore();
   const [search, setSearch] = useState('');
@@ -69,6 +72,26 @@ export function CaseQueue({
           </button>
         )}
       </div>
+      {readOnly && mode === 'demo' && judgeExamples.length === 2 && (
+        <section className="sheet judge-walkthrough" aria-labelledby="judge-walkthrough-title">
+          <h2 id="judge-walkthrough-title">Start with these two examples.</h2>
+          <p>Compare the records. See why one charge needs review and the other stays.</p>
+          <ol>
+            {judgeExamples.map((example) => (
+              <li key={example.id}>
+                <Link href={`/cases/${example.id}`}>
+                  {example.label} <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+                <p>{example.description}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="judge-example-note">
+            Example analysis · no AI. Both invoices are simulated. Open each cited record to check
+            the explanation.
+          </p>
+        </section>
+      )}
       {!readOnly && (
         <div id="case-intake" hidden={!creating}>
           <NewCase mode={mode} draftScope={draftScope} />

@@ -43,5 +43,7 @@ ingestion:
       - { name: APP_URL, datatype: string, optional: true }
       - { name: BETTER_AUTH_SECRET, datatype: string, secret: true, optional: true }
       - { name: OWNER_EMAILS, datatype: string, optional: true }
+      - { name: READ_ONLY_JUDGE_EMAIL, datatype: string, optional: true }
+      - { name: CLEARDUE_SETUP_TASK, datatype: string, optional: true }
       - { name: CLEARDUE_OWNER_EMAIL, datatype: string, optional: true }
       - { name: CLEARDUE_OWNER_PASSWORD, datatype: string, secret: true, optional: true }

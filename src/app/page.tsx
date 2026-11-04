@@ -9,6 +9,7 @@ import { Shell, SetupRequired } from '@/components/ui';
 import { CaseQueue } from '@/components/case-queue';
 import { pageData, requestTimestamp } from '@/server/page-data';
 import { hash } from '@/domain/core';
+import { savedJudgeExamples } from '@/server/judge-examples';
 export const dynamic = 'force-dynamic';
 export default async function Home() {
   const result = await pageData(async () => {
@@ -37,13 +38,14 @@ export default async function Home() {
       c,
       rows: rows.map((row) => ({ ...row, pendingReplies: pendingReplies[row.id] ?? 0 })),
       readOnly: actor.readOnly,
+      judgeExamples: actor.readOnly ? await savedJudgeExamples(actor.id) : [],
       now: requestTimestamp(),
       draftScope: hash([actor.id, c.merchant, c.mode]),
     };
   });
   if (result.error)
     return <SetupRequired message={result.error} signInRequired={result.signInRequired} />;
-  const { c, rows, now, draftScope, readOnly } = result.data!;
+  const { c, rows, now, draftScope, readOnly, judgeExamples } = result.data!;
   return (
     <Shell mode={c.mode} ai={c.ai} readOnly={readOnly}>
       <CaseQueue
@@ -53,6 +55,7 @@ export default async function Home() {
         now={now}
         draftScope={draftScope}
         readOnly={readOnly}
+        judgeExamples={judgeExamples}
       />
     </Shell>
   );

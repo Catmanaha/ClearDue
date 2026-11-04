@@ -29,6 +29,7 @@ import { auth } from '../../src/server/auth';
 import { provisionOwner } from '../../src/server/provision-owner';
 import { reserveBudget } from '../../src/server/investigator';
 import { createIntakeCase } from '../../src/server/intake';
+import { prepareJudgeExamples, savedJudgeExamples } from '../../src/server/judge-examples';
 if (existsSync('.env')) process.loadEnvFile('.env');
 const testUrl = process.env.TEST_DATABASE_URL;
 if (
@@ -74,6 +75,51 @@ afterAll(async () => {
   await closeDb();
 });
 describe('real PostgreSQL transactional safety', () => {
+  it('prepares two scoped judge examples once without changing seeded cases or invoice amounts', async () => {
+    const [first, replay] = await Promise.all([
+      prepareJudgeExamples('demo-owner'),
+      prepareJudgeExamples('demo-owner'),
+    ]);
+    expect(first).toHaveLength(2);
+    expect(replay).toEqual(first);
+    expect(await savedJudgeExamples('another-owner')).toEqual([]);
+    const questioned = await workbench('demo-owner', first[0].id);
+    const approved = await workbench('demo-owner', first[1].id);
+    expect(questioned.runs).toHaveLength(1);
+    expect(approved.runs).toHaveLength(1);
+    expect(questioned.runs[0].provenance).toBe('fixture-rules');
+    expect(questioned.runs[0].result?.action.type).toBe('REMOVE_ITEM');
+    expect(questioned.proposals).toHaveLength(1);
+    expect(approved.runs[0].result?.issue).toBe('NO_CHANGE');
+    expect(approved.proposals).toEqual([]);
+    for (const saved of [questioned, approved]) {
+      expect(saved.commands).toEqual([]);
+      expect(saved.case.invoice.totalPence).toBe(125000);
+      expect(saved.case.invoice.duePence).toBe(125000);
+      expect(saved.case.invoice.paidPence).toBe(0);
+    }
+    expect((await workbench('demo-owner', 'case-1')).runs).toEqual([]);
+    expect((await workbench('demo-owner', 'case-2')).runs).toEqual([]);
+    await addEvidence('demo-owner', first[0].id, {
+      label: 'Later information',
+      kind: 'message',
+      text: 'Please review a later message before proceeding.',
+    });
+    expect(await savedJudgeExamples('demo-owner')).toEqual([]);
+    await expect(prepareJudgeExamples('demo-owner')).rejects.toThrow('A saved example changed');
+  });
+
+  it('refuses judge example preparation with live analysis enabled', async () => {
+    vi.stubEnv('AI_MODE', 'live');
+    vi.stubEnv('LIVE_AI_ENABLED', 'true');
+    try {
+      await expect(prepareJudgeExamples('demo-owner')).rejects.toThrow('explicit fixture analysis');
+    } finally {
+      vi.unstubAllEnvs();
+    }
+    expect(await savedJudgeExamples('demo-owner')).toEqual([]);
+  });
+
   it('concurrent retries save one case and roll back competing records', async () => {
     const key = randomUUID();
     const input = {

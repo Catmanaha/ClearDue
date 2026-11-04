@@ -2254,3 +2254,47 @@ textarea::placeholder {
   font-size: 11px;
   margin-top: 8px;
 }
+.judge-walkthrough {
+  margin-bottom: 24px;
+  padding: 24px;
+}
+.judge-walkthrough h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+.judge-walkthrough > p {
+  max-width: 72ch;
+}
+.judge-walkthrough ol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 40px;
+  padding-left: 24px;
+  margin: 24px 0;
+}
+.judge-walkthrough li {
+  padding-left: 4px;
+}
+.judge-walkthrough li a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.judge-walkthrough li p {
+  margin: 8px 0 0;
+}
+.judge-example-note {
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 700px) {
+  .judge-walkthrough {
+    padding: 20px;
+  }
+  .judge-walkthrough ol {
+    grid-template-columns: 1fr;
+  }
+}

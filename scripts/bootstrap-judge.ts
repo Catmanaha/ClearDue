@@ -2,6 +2,7 @@ import { config } from '../src/server/config';
 import { pool, closeDb } from '../src/server/db';
 import { provisionOwner } from '../src/server/provision-owner';
 import { seed } from '../src/server/seed';
+import { prepareJudgeExamples } from '../src/server/judge-examples';
 
 // Operator-only, explicit initialization; never called by web/worker startup.
 let failed = false;
@@ -25,6 +26,7 @@ try {
       process.env.CLEARDUE_OWNER_PASSWORD,
     );
     await seed(owner.user.id);
+    await prepareJudgeExamples(owner.user.id);
     console.log('Synthetic judge workspace initialized for its authenticated owner.');
   } finally {
     await client.query('SELECT pg_advisory_unlock(41702027)');
