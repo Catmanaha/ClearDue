@@ -359,7 +359,9 @@ export function EvidenceComparison() {
                 </small>
               </blockquote>
             ) : (
-              <p className="fine-print">Run the case investigation to link source excerpts.</p>
+              <p className="fine-print">
+                No saved source excerpts yet. Open the case to read its records.
+              </p>
             )}
             <div className="comparison-balance">
               Invoice {money(row.totalPence)} · outstanding {money(row.duePence)}

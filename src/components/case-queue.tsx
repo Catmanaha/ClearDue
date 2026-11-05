@@ -253,7 +253,7 @@ export function CaseQueue({
             without your review.
           </p>
         </div>
-        {counterexample && (
+        {!readOnly && counterexample && (
           <Link href={`/cases/${counterexample.id}`}>
             See an approval counterexample <ArrowRight size={16} />
           </Link>

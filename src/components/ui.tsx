@@ -130,7 +130,13 @@ export function Shell({
             <span className={mode === 'demo' ? 'mode-demo' : 'mode-sandbox'}>
               {mode === 'demo' ? 'Demo workspace · simulated payments' : 'PayPal sandbox'}
             </span>
-            <span>{ai === 'fixture' ? 'Example analysis · no AI' : 'AI analysis selected'}</span>
+            <span>
+              {readOnly
+                ? 'Saved findings · read-only'
+                : ai === 'fixture'
+                  ? 'Example analysis · no AI'
+                  : 'AI analysis selected'}
+            </span>
           </div>
         </header>
         <main id="main" className="main">
